@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=LegionKeyboardRGB
+Comment=Flatpak app
+Type=Application
+# should be the same as the Cargo project name
+Exec=legion-kb-rgb
+Terminal=false
+Categories=Utility;GTK;
+Keywords=Rust;Flatpak;GTK;
+Icon=com.github.4JX.LegionKeyboardRGB
+StartupNotify=true

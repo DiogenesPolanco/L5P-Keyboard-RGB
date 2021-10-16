@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.4JX.LegionKeyboardRGB</id>
+  <name>LegionKeyboardRGb</name>
+  <summary>Controls the lights on your Lenovo Legion laptop keyboard.</summary>
+  <description>
+    <p>
+    See the github page for compatibility.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>An image</image>
+      <caption>Main Window</caption>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/4JX/L5P-Keyboard-RGB</url>
+<!--
+Open Age Rating Service
+https://hughsie.github.io/oars/index.html
+-->
+  <content_rating type="oars-1.0" />
+  <releases>
+    <release version="0.7.0" date="2021-10-16">
+      <description>
+        <p>A flatpak port</p>
+      </description>
+    </release>
+  </releases>
+  <kudos>
+    <kudo>ModernToolkit</kudo>
+    <kudo>HiDpiIcon</kudo>
+  </kudos>
+  <developer_name>4JX</developer_name>
+
+  <launchable type="desktop-id">com.github.4JX.LegionKeyboardRGB.desktop</launchable>
+</component>
