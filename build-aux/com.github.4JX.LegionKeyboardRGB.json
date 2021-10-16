@@ -1,26 +1,29 @@
 {
-	"app-id": "com.github.4JX.LegionKeyboardRGB",
+	"app-id": "io.github.FourJX.LegionKeyboardRGB",
 	"runtime": "org.freedesktop.Platform",
 	"runtime-version": "21.08",
 	"sdk": "org.freedesktop.Sdk",
 	"sdk-extensions": ["org.freedesktop.Sdk.Extension.rust-stable"],
 	"command": "legion-kb-rgb",
-	"finish-args": ["--share=ipc", "--socket=fallback-x11", "--socket=wayland", "--device=dri"],
+	"finish-args": ["--share=ipc", "--socket=fallback-x11", "--socket=wayland", "--device=dri", "--libdir=/usr/lib"],
 	"build-options": {
 		"append-path": "/usr/lib/sdk/rust-stable/bin",
 		"build-args": ["--share=network"],
 		"env": {
-			"CARGO_HOME": "/run/build/legion-kb-rgb/cargo"
+			"CARGO_HOME": "/run/build/legion-kb-rgb/cargo",
+			"VCPKG_INSTALLATION_ROOT": "fake/path",
+			"LIBCLANG_PATH": "/usr/lib/libclang.so"
 		}
 	},
 	"modules": [
+		"shared-modules/libusb/libusb.json",
 		{
 			"name": "legion-kb-rgb",
 			"buildsystem": "meson",
 			"sources": [
 				{
 					"type": "dir",
-					"url": "../"
+					"path": "../"
 				}
 			]
 		}

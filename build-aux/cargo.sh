@@ -8,7 +8,6 @@ export OUTPUT="$3"
 export BUILDTYPE="release"
 export APP_BIN="$5"
 
-
 if [[ $BUILDTYPE = "release" ]]
 then
     echo "RELEASE MODE"

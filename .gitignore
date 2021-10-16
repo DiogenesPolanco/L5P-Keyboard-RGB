@@ -6,3 +6,11 @@
 
 # Rust
 target
+
+#Flatpak
+.flatpak
+.flatpak-builder
+repo
+
+#Other
+script.py
