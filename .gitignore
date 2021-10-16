@@ -14,3 +14,4 @@ repo
 
 #Other
 script.py
+generate-manifest.sh
