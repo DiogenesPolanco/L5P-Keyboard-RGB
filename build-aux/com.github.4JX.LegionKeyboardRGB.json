@@ -5,7 +5,7 @@
 	"sdk": "org.freedesktop.Sdk",
 	"sdk-extensions": ["org.freedesktop.Sdk.Extension.rust-stable"],
 	"command": "legion-kb-rgb",
-	"finish-args": ["--share=ipc", "--socket=fallback-x11", "--socket=wayland", "--device=dri", "--libdir=/usr/lib"],
+	"finish-args": ["--share=ipc", "--socket=fallback-x11", "--socket=wayland", "--device=dri"],
 	"build-options": {
 		"append-path": "/usr/lib/sdk/rust-stable/bin",
 		"build-args": ["--share=network"],
@@ -17,6 +17,7 @@
 	},
 	"modules": [
 		"shared-modules/libusb/libusb.json",
+		"clang.json",
 		{
 			"name": "legion-kb-rgb",
 			"buildsystem": "meson",
