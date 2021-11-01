@@ -109,14 +109,17 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: Sender<Messa
 			}
 
 			1 => {
+				println!("Callback Static");
 				stop_signal.store(true, Ordering::Relaxed);
 				tx.send(Message::UpdateEffect { effect: Effects::Static });
 			}
 			2 => {
+				println!("Callback Breath");
 				stop_signal.store(true, Ordering::Relaxed);
 				tx.send(Message::UpdateEffect { effect: Effects::Breath });
 			}
 			3 => {
+				println!("Callback Smooth");
 				stop_signal.store(true, Ordering::Relaxed);
 				tx.send(Message::UpdateEffect { effect: Effects::Smooth });
 			}
@@ -129,6 +132,7 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: Sender<Messa
 				tx.send(Message::UpdateEffect { effect: Effects::RightWave });
 			}
 			6 => {
+				println!("Callback Lightning");
 				stop_signal.store(true, Ordering::Relaxed);
 				tx.send(Message::UpdateEffect { effect: Effects::Lightning });
 			}

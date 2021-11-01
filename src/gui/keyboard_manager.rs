@@ -1,7 +1,7 @@
 use super::enums::Message;
 use super::{enums::Effects, keyboard_color_tiles::KeyboardColorTiles};
 use crate::keyboard_utils::{BaseEffects, Keyboard};
-use fltk::app::Receiver;
+use fltk::app::{self, Receiver};
 use fltk::{menu::Choice, prelude::*};
 use image::buffer::ConvertBuffer;
 use rand::Rng;
@@ -27,7 +27,8 @@ impl KeyboardManager {
 			if let Some(message) = self.rx.recv() {
 				match message {
 					Message::UpdateEffect { effect } => {
-						stop_signal.store(true, Ordering::Relaxed);
+						println!("UpdateEffect message {}", effect);
+						// stop_signal.store(true, Ordering::Relaxed);
 						while !stop_signal.load(Ordering::Relaxed) {
 							thread::sleep(Duration::from_millis(100));
 						}
@@ -52,6 +53,7 @@ impl KeyboardManager {
 						self.keyboard.set_speed(value);
 					}
 				}
+				app::awake();
 			}
 			thread::sleep(Duration::from_millis(20));
 		}
@@ -89,6 +91,7 @@ impl KeyboardManager {
 				keyboard_color_tiles.deactivate();
 
 				while !stop_signal.load(Ordering::Relaxed) {
+					println!("Lightning loop");
 					if stop_signal.load(Ordering::Relaxed) {
 						break;
 					}
@@ -99,6 +102,7 @@ impl KeyboardManager {
 					let sleep_time = rand::thread_rng().gen_range(100..=2000);
 					thread::sleep(Duration::from_millis(sleep_time));
 				}
+				println!("Escaped lightning effect loop");
 			}
 			Effects::AmbientLight => {
 				keyboard_color_tiles.deactivate();
