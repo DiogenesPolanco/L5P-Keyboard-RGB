@@ -32,6 +32,7 @@ pub enum Colors {
 	White = 0xffffff,
 }
 
+#[derive(Clone)]
 pub enum Message {
 	UpdateAllValues { value: [f32; 12] },
 	UpdateRGB { index: u8, value: f32 },

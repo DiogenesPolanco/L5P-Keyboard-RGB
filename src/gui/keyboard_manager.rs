@@ -1,12 +1,12 @@
 use super::enums::Message;
 use super::{enums::Effects, keyboard_color_tiles::KeyboardColorTiles};
 use crate::keyboard_utils::{BaseEffects, Keyboard};
+use fltk::app::Receiver;
 use fltk::{menu::Choice, prelude::*};
 use image::buffer::ConvertBuffer;
 use rand::Rng;
 use scrap::{Capturer, Display};
 use std::sync::atomic::AtomicBool;
-use std::sync::mpsc::Receiver;
 use std::{
 	convert::TryInto,
 	sync::{atomic::Ordering, Arc},
@@ -24,7 +24,7 @@ pub struct KeyboardManager {
 impl KeyboardManager {
 	pub fn start(&mut self, mut keyboard_color_tiles: &mut KeyboardColorTiles, mut speed_choice: &mut Choice, stop_signal: &Arc<AtomicBool>) {
 		loop {
-			if let Ok(message) = self.rx.try_recv() {
+			if let Some(message) = self.rx.recv() {
 				match message {
 					Message::UpdateEffect { effect } => {
 						stop_signal.store(true, Ordering::Relaxed);
@@ -53,6 +53,7 @@ impl KeyboardManager {
 					}
 				}
 			}
+			thread::sleep(Duration::from_millis(20));
 		}
 	}
 	pub fn change_effect(&mut self, effect: Effects, keyboard_color_tiles: &mut KeyboardColorTiles, speed_choice: &mut Choice, stop_signal: &Arc<AtomicBool>) {

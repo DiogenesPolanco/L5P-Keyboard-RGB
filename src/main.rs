@@ -1,7 +1,6 @@
 #![windows_subsystem = "windows"]
 use fltk::app;
 use std::sync::atomic::AtomicBool;
-use std::sync::mpsc;
 use std::sync::Arc;
 mod gui;
 use gui::keyboard_manager;
@@ -11,7 +10,7 @@ use gui::enums::Message;
 fn main() {
 	let app = app::App::default();
 
-	let (tx, rx) = mpsc::channel::<Message>();
+	let (tx, rx) = app::channel::<Message>();
 	let stop_signal = Arc::new(AtomicBool::new(false));
 	let keyboard = match keyboard_utils::get_keyboard(stop_signal.clone()) {
 		Ok(keyboard) => keyboard,

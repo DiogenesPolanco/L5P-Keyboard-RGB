@@ -1,6 +1,7 @@
 use super::enums::Message;
 use super::keyboard_manager;
 use super::{effect_browser_tile, enums::BaseColor, enums::Effects, keyboard_color_tiles, options_tile};
+use fltk::app::Sender;
 use fltk::{
 	app,
 	enums::{Event, Font},
@@ -10,14 +11,13 @@ use fltk::{
 	window::Window,
 };
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread;
 
 const WIDTH: i32 = 900;
 const HEIGHT: i32 = 450;
 
-pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: mpsc::Sender<Message>, stop_signal: Arc<AtomicBool>) -> fltk::window::Window {
+pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: Sender<Message>, stop_signal: Arc<AtomicBool>) -> fltk::window::Window {
 	//UI
 	let mut win = Window::default().with_size(WIDTH, HEIGHT).with_label("Legion Keyboard RGB Control");
 	let mut color_picker_pack = Pack::new(0, 0, 540, 360, "");
@@ -67,7 +67,7 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: mpsc::Sender
 			if let Some(value) = choice.choice() {
 				let speed = value.parse::<u8>().unwrap();
 				if (1..=4).contains(&speed) {
-					tx.send(Message::UpdateSpeed { speed }).unwrap();
+					tx.send(Message::UpdateSpeed { speed });
 				}
 			}
 		}
@@ -80,7 +80,7 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: mpsc::Sender
 			if let Some(value) = choice.choice() {
 				let brightness = value.parse::<u8>().unwrap();
 				if (1..=2).contains(&brightness) {
-					tx.send(Message::UpdateBrightness { brightness }).unwrap();
+					tx.send(Message::UpdateBrightness { brightness });
 				}
 			}
 		}
@@ -96,47 +96,47 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: mpsc::Sender
 
 			1 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::Static }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::Static });
 			}
 			2 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::Breath }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::Breath });
 			}
 			3 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::Smooth }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::Smooth });
 			}
 			4 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::LeftWave }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::LeftWave });
 			}
 			5 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::RightWave }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::RightWave });
 			}
 			6 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::Lightning }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::Lightning });
 			}
 			7 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::AmbientLight }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::AmbientLight });
 			}
 			8 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::SmoothLeftWave }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::SmoothLeftWave });
 			}
 			9 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::SmoothRightWave }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::SmoothRightWave });
 			}
 			10 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::LeftSwipe }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::LeftSwipe });
 			}
 			11 => {
 				stop_signal.store(true, Ordering::Relaxed);
-				tx.send(Message::UpdateEffect { effect: Effects::RightSwipe }).unwrap();
+				tx.send(Message::UpdateEffect { effect: Effects::RightSwipe });
 			}
 			_ => {}
 		}
@@ -147,9 +147,9 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: mpsc::Sender
 	win
 }
 
-fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<AtomicBool>) -> keyboard_color_tiles::KeyboardColorTiles {
-	fn add_zone_tile_handle(control_tile: &mut keyboard_color_tiles::ColorTile, tx: &mpsc::Sender<Message>, zone_index: u8, stop_signal: Arc<AtomicBool>) {
-		fn add_input_handle(input: &mut IntInput, color: BaseColor, tx: mpsc::Sender<Message>, zone_index: u8, stop_signal: Arc<AtomicBool>) {
+fn create_keyboard_color_tiles(tx: &Sender<Message>, stop_signal: Arc<AtomicBool>) -> keyboard_color_tiles::KeyboardColorTiles {
+	fn add_zone_tile_handle(control_tile: &mut keyboard_color_tiles::ColorTile, tx: &Sender<Message>, zone_index: u8, stop_signal: Arc<AtomicBool>) {
+		fn add_input_handle(input: &mut IntInput, color: BaseColor, tx: Sender<Message>, zone_index: u8, stop_signal: Arc<AtomicBool>) {
 			let triplet_index = zone_index * 3;
 			let color_index = match color {
 				BaseColor::Red => 0,
@@ -170,8 +170,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 									tx.send(Message::UpdateValue {
 										index,
 										value: input.value().parse().unwrap(),
-									})
-									.unwrap();
+									});
 								}
 							}
 							Err(_) => {
@@ -191,7 +190,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 			move |button, event| match event {
 				Event::Released => {
 					if button.is_toggled() {
-						tx.send(Message::UpdateZone { zone_index, value: [0.0; 3] }).unwrap();
+						tx.send(Message::UpdateZone { zone_index, value: [0.0; 3] });
 						control_tile.red_input.deactivate();
 						control_tile.green_input.deactivate();
 						control_tile.blue_input.deactivate();
@@ -203,8 +202,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 								control_tile.green_input.value().parse::<f32>().unwrap(),
 								control_tile.blue_input.value().parse::<f32>().unwrap(),
 							],
-						})
-						.unwrap();
+						});
 						control_tile.red_input.activate();
 						control_tile.green_input.activate();
 						control_tile.blue_input.activate();
@@ -222,8 +220,8 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 		add_input_handle(&mut control_tile.blue_input, BaseColor::Blue, tx.clone(), zone_index, stop_signal);
 	}
 
-	fn add_master_tile_handle(keyboard_color_tiles: &mut keyboard_color_tiles::KeyboardColorTiles, tx: &mpsc::Sender<Message>, stop_signal: Arc<AtomicBool>) {
-		fn add_master_input_handle(input: &mut IntInput, color: BaseColor, tx: mpsc::Sender<Message>, keyboard_color_tiles: keyboard_color_tiles::KeyboardColorTiles, stop_signal: Arc<AtomicBool>) {
+	fn add_master_tile_handle(keyboard_color_tiles: &mut keyboard_color_tiles::KeyboardColorTiles, tx: &Sender<Message>, stop_signal: Arc<AtomicBool>) {
+		fn add_master_input_handle(input: &mut IntInput, color: BaseColor, tx: Sender<Message>, keyboard_color_tiles: keyboard_color_tiles::KeyboardColorTiles, stop_signal: Arc<AtomicBool>) {
 			let index = match color {
 				BaseColor::Red => 0,
 				BaseColor::Green => 1,
@@ -242,8 +240,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 								tx.send(Message::UpdateRGB {
 									index,
 									value: input.value().parse().unwrap(),
-								})
-								.unwrap();
+								});
 								keyboard_color_tiles.zones.change_color_value(color, input.value().parse().unwrap());
 							}
 						} else {
@@ -265,7 +262,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 			move |button, event| match event {
 				Event::Released => {
 					if button.is_toggled() {
-						tx.send(Message::UpdateAllValues { value: [255.0; 12] }).unwrap();
+						tx.send(Message::UpdateAllValues { value: [255.0; 12] });
 						master_tile.red_input.deactivate();
 						master_tile.green_input.deactivate();
 						master_tile.blue_input.deactivate();
@@ -287,8 +284,7 @@ fn create_keyboard_color_tiles(tx: &mpsc::Sender<Message>, stop_signal: Arc<Atom
 								zones.right.green_input.value().parse::<f32>().unwrap(),
 								zones.right.blue_input.value().parse::<f32>().unwrap(),
 							],
-						})
-						.unwrap();
+						});
 						master_tile.red_input.activate();
 						master_tile.green_input.activate();
 						master_tile.blue_input.activate();
