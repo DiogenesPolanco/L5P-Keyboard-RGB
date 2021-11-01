@@ -17,6 +17,20 @@ use std::thread;
 const WIDTH: i32 = 900;
 const HEIGHT: i32 = 450;
 
+pub const EFFECT_LIST: [&str; 11] = [
+	"Static",
+	"Breath",
+	"Smooth",
+	"LeftWave",
+	"RightWave",
+	"Lightning",
+	"AmbientLight",
+	"SmoothLeftWave",
+	"SmoothRightWave",
+	"LeftSwipe",
+	"RightSwipe",
+];
+
 pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: Sender<Message>, stop_signal: Arc<AtomicBool>) -> fltk::window::Window {
 	//UI
 	let mut win = Window::default().with_size(WIDTH, HEIGHT).with_label("Legion Keyboard RGB Control");
@@ -30,20 +44,20 @@ pub fn start_ui(mut manager: keyboard_manager::KeyboardManager, tx: Sender<Messa
 	color_picker_pack.add(&keyboard_color_tiles.master.exterior_tile);
 	color_picker_pack.end();
 
-	let effects_list: Vec<&str> = vec![
-		"Static",
-		"Breath",
-		"Smooth",
-		"LeftWave",
-		"RightWave",
-		"Lightning",
-		"AmbientLight",
-		"SmoothLeftWave",
-		"SmoothRightWave",
-		"LeftSwipe",
-		"RightSwipe",
-	];
-	let effect_browser_tile = effect_browser_tile::EffectBrowserTile::create(&effects_list);
+	// let effects_list: Vec<&str> = vec![
+	// 	"Static",
+	// 	"Breath",
+	// 	"Smooth",
+	// 	"LeftWave",
+	// 	"RightWave",
+	// 	"Lightning",
+	// 	"AmbientLight",
+	// 	"SmoothLeftWave",
+	// 	"SmoothRightWave",
+	// 	"LeftSwipe",
+	// 	"RightSwipe",
+	// ];
+	let effect_browser_tile = effect_browser_tile::EffectBrowserTile::create(&EFFECT_LIST);
 	let mut effect_browser = effect_browser_tile.effect_browser;
 
 	let options_tile = options_tile::OptionsTile::create();

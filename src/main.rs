@@ -1,13 +1,70 @@
 #![windows_subsystem = "windows"]
+use clap::crate_authors;
+use clap::crate_version;
 use fltk::app;
+use std::env;
+use std::str::FromStr;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 mod gui;
 use gui::keyboard_manager;
 mod keyboard_utils;
+use clap::{App, Arg, SubCommand};
 use gui::enums::Message;
-
 fn main() {
+	let matches = App::new("Legion Keyboard Control")
+		.version(&crate_version!()[..])
+		.author(&crate_authors!()[..])
+		.about("Placeholder")
+		.subcommand(
+			SubCommand::with_name("brightness")
+				.about("Changes the brightness")
+				.arg(Arg::with_name("value").required(true).help("The value to use. [1-2]").index(1)),
+		)
+		.subcommand(
+			SubCommand::with_name("speed")
+				.about("Changes the speed")
+				.arg(Arg::with_name("value").required(true).help("The value to use. [1-4]").index(1)),
+		)
+		.subcommand(
+			SubCommand::with_name("effect").about("Changes the effect").arg(
+				Arg::with_name("effect")
+					.required(true)
+					.help(format!("The effect to set. Available options are: {}", crate::gui::builder::EFFECT_LIST.join(", ")).as_str())
+					.index(1),
+			),
+		)
+		.get_matches();
+	match matches.subcommand_name() {
+		Some(sub @ "brightness") => {
+			let matches = matches.subcommand_matches(sub).unwrap();
+			let brightness = matches.value_of("value").unwrap();
+			println!("Brightness {}", brightness);
+		}
+		Some(sub @ "speed") => {
+			let matches = matches.subcommand_matches(sub).unwrap();
+			let speed = matches.value_of("value").unwrap();
+
+			println!("Speed {}", speed);
+		}
+		Some(sub @ "effect") => {
+			let matches = matches.subcommand_matches(sub).unwrap();
+			let effect = matches.value_of("effect").unwrap();
+			println!("Effect {}", effect);
+			println!("{}", gui::enums::Effects::from_str(effect).unwrap_or(crate::gui::enums::Effects::Static));
+		}
+		Some(_) => {
+			println!("Other");
+		}
+		None => {
+			let exec_name = env::current_exe().unwrap().file_name().unwrap().to_string_lossy().into_owned();
+			println!("No subcommands found, starting in GUI mode. To view the possible subcommands type {} --help", exec_name);
+			start_with_gui();
+		}
+	}
+}
+
+fn start_with_gui() {
 	let app = app::App::default();
 
 	let (tx, rx) = app::channel::<Message>();
